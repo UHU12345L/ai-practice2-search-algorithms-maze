@@ -1,16 +1,14 @@
 package P2;
 
-import java.util.*;
-import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;
-import P2.Entorno;
 
 public class Busqueda {
+	//sobreescribir por Anchura, profundidad , A, A mejorado
 	protected String getNombre() {
 	    return "Busqueda";
 	}
-	//sobreescribir por Anchura, profundidad , A
+	//sobreescribir por Anchura, profundidad , A, A mejorado
 	protected void insertarEnAbiertos(LinkedList<Nodo> abiertos, Nodo nodo) {
 		abiertos.addLast(nodo);
 	}
@@ -26,13 +24,14 @@ public class Busqueda {
 	     int maxAbiertos = 0;
 	     long tiempoInicio = System.nanoTime();
 	     
-	     //porque calcular heuristica y no directamente con 0
+	     //heuristica: cada algoritmo el suyo (anchura y profundidad 0)
 	     Nodo inicial = new Nodo(af, ac, null, null, 0, calcularH(af,ac, mapa));
 	     abiertos.addLast(inicial);
 		 
 	     System.out.println("Iniciando busqueda" + getNombre());
 	     System.out.println("Origen: ("+af+","+ac+") -> Meta: ("+mapa.metaF+","+mapa.metaC+")");
-		 while (abiertos.size()>0) {
+		 //mientras hay nodos en abiertos
+	     while (abiertos.size()>0) {
 			 Nodo actual = abiertos.removeFirst();
 			 cerrados.addLast(actual);
 			 nodosExpandidos++;
@@ -45,11 +44,13 @@ public class Busqueda {
 			    System.out.println("[PASO " + paso + "] \nSeleccionado: (" + actual.f + "," + actual.c + ")"
 			            + " [f=" + actual.valorF + ", g=" + actual.g + ", h=" + actual.h + "]");
 
+			    //comprobar si actual es meta para cálculos finales
 			    if (mapa.esMeta(actual.f, actual.c)) {
 			        long tiempoFin = System.nanoTime();
 			        double ms = (tiempoFin - tiempoInicio) / 1000000.0; //nano a mili s
 			        List<String> camino = reconstruirCamino(actual);
 			        
+			        //connstruir camino de meta a inicio siguiendo a pa
 			        String caminoRecorrido="[";
 			        Nodo n =actual;
 			        LinkedList<Nodo> nodos=new LinkedList<>();
@@ -78,24 +79,33 @@ public class Busqueda {
 			    }
 
 			    List<Nodo> sucesores = getSucesores(actual, mapa);
-			    sucesores = quitarRepetidos(sucesores, abiertos, cerrados);
+			    
+			    String hijosAntes="";
+			    for (int j = 0; j < sucesores.size(); j++) {
+		            hijosAntes = hijosAntes + "(" + sucesores.get(j).f + "," + sucesores.get(j).c + ")";
+		            if (j < sucesores.size() - 1) {
+		                hijosAntes = hijosAntes + ", ";
+		            }
+			    }
+	            System.out.println("Generados hijos antes de quitar repetidos: " + hijosAntes);
+			    List<Nodo> sucesoresSin = quitarRepetidos(sucesores, abiertos, cerrados);
 
 			    // imprimir hijos generados
-			    if (sucesores.size() == 0) {
+			    if (sucesoresSin.size() == 0) {
 			        System.out.println("Generados hijos: Ninguno");
 			    } else {
 			        String hijos = "";
-			        for (int i = 0; i < sucesores.size(); i++) {
-			            hijos = hijos + "(" + sucesores.get(i).f + "," + sucesores.get(i).c + ")";
-			            if (i < sucesores.size() - 1) {
+			        for (int i = 0; i < sucesoresSin.size(); i++) {
+			            hijos = hijos + "(" + sucesoresSin.get(i).f + "," + sucesoresSin.get(i).c + ")";
+			            if (i < sucesoresSin.size() - 1) {
 			                hijos = hijos + ", ";
 			            }
 			        }
 			        System.out.println("Generados hijos: " + hijos);
 			    }
 
-			    for (int i = 0; i < sucesores.size(); i++) {
-			        insertarEnAbiertos(abiertos, sucesores.get(i));
+			    for (int i = 0; i < sucesoresSin.size(); i++) {
+			        insertarEnAbiertos(abiertos, sucesoresSin.get(i));
 			    }
 
 			    // imprimir estado de abiertos

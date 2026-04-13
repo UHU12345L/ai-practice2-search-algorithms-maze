@@ -34,7 +34,7 @@ public class Tron {
 		    "#######";
 
     public static void main(String[] args) throws InterruptedException {
-    	String mapaProbar = MAPA_CALLEJON;
+    	String mapaProbar = mapaTexto;
     	 Entorno juego = new Entorno(mapaProbar);
     	 AgenteBusqueda agente = new AgenteBusqueda(); // Nuestro nuevo agente
     	 System.out.println("--- Inicio de la Simulación ---");

@@ -1,5 +1,6 @@
 package P2;
 import java.util.*;
+
 public class Nodo implements Comparable<Nodo> {
 	 int f, c;
 	 Nodo padre;

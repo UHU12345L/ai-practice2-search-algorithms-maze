@@ -12,8 +12,8 @@ public class AgenteBusqueda {
 		 System.out.println("Agente calculando ruta...");
 		 //BusquedaAnchura buscador = new BusquedaAnchura();
 		 //BusquedaProfundidad buscador = new BusquedaProfundidad();
-		 BusquedaA buscador = new BusquedaA();
-		 //BusquedaAMejorado buscador = new BusquedaAMejorado();
+		 //BusquedaA buscador = new BusquedaA();
+		 BusquedaAMejorado buscador = new BusquedaAMejorado();
 		 
 		 List<String> camino = buscador.resolver(entorno);
 		 if (camino != null) {

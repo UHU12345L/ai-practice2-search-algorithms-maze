@@ -1,7 +1,6 @@
 package P2;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class BusquedaAMejorado extends Busqueda{
 	//insertar ordenado, removeFirst
@@ -36,8 +35,15 @@ public class BusquedaAMejorado extends Busqueda{
     // asi abiertos siempre esta ordenado de menor a mayor valorF
     protected void insertarEnAbiertos(LinkedList<Nodo> abiertos, Nodo nuevo) {
         int i = 0;
-        while (i < abiertos.size() && abiertos.get(i).valorF <= nuevo.valorF) {
-            i++;
+        while (i < abiertos.size()) {
+        	if (abiertos.get(i).valorF < nuevo.valorF ) {
+        		i++;
+        	} else if (abiertos.get(i).valorF == nuevo.valorF && abiertos.get(i).h <= nuevo.h) {
+        		i++;
+        	} else {
+        		break;
+        	}
+            
         }
         abiertos.add(i, nuevo);
     }
