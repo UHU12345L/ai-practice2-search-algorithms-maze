@@ -4,11 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Busqueda {
-	//sobreescribir por Anchura, profundidad , A, A mejorado
 	protected String getNombre() {
 	    return "Busqueda";
 	}
-	//sobreescribir por Anchura, profundidad , A, A mejorado
+	//sobreescribir por Anchura, profundidad , A, A mejorado como insertan en abiertos
 	protected void insertarEnAbiertos(LinkedList<Nodo> abiertos, Nodo nodo) {
 		abiertos.addLast(nodo);
 	}
@@ -16,6 +15,7 @@ public class Busqueda {
 	public List<String> resolver(Entorno mapa) {
 		 LinkedList<Nodo> abiertos =new LinkedList<>();
 		 LinkedList<Nodo> cerrados =new LinkedList<>();
+		 //posicion inicial
 		 int af = mapa.agenteF;
 	     int ac = mapa.agenteC;
 	     
@@ -24,19 +24,22 @@ public class Busqueda {
 	     int maxAbiertos = 0;
 	     long tiempoInicio = System.nanoTime();
 	     
+	     //padre, accion, coste, heuristica
 	     //heuristica: cada algoritmo el suyo (anchura y profundidad 0)
 	     Nodo inicial = new Nodo(af, ac, null, null, 0, calcularH(af,ac, mapa));
-	     abiertos.addLast(inicial);
+	     abiertos.addLast(inicial); //solo
 		 
 	     System.out.println("Iniciando busqueda" + getNombre());
 	     System.out.println("Origen: ("+af+","+ac+") -> Meta: ("+mapa.metaF+","+mapa.metaC+")");
-		 //mientras hay nodos en abiertos
+		
+	     //mientras hay nodos en abiertos
 	     while (abiertos.size()>0) {
+	    	 //cambio entre algoritmos: mete en abiertos
 			 Nodo actual = abiertos.removeFirst();
 			 cerrados.addLast(actual);
 			 nodosExpandidos++;
 			 
-			// actualizar el maximo de abiertos
+			//actualizar el maximo de abiertos
 			    if (abiertos.size() > maxAbiertos) {
 			        maxAbiertos = abiertos.size();
 			    }
@@ -50,12 +53,12 @@ public class Busqueda {
 			        double ms = (tiempoFin - tiempoInicio) / 1000000.0; //nano a mili s
 			        List<String> camino = reconstruirCamino(actual);
 			        
-			        //connstruir camino de meta a inicio siguiendo a pa
+			        //construir camino de meta a inicio siguiendo a padres
 			        String caminoRecorrido="[";
 			        Nodo n =actual;
 			        LinkedList<Nodo> nodos=new LinkedList<>();
 			        while (n!=null) {
-			        	nodos.addFirst(n);
+			        	nodos.addFirst(n); //meta lo primero
 			        	n=n.padre;
 			        }
 			        for(int i=0;i<nodos.size();i++) {
@@ -78,6 +81,7 @@ public class Busqueda {
 			        return camino;
 			    }
 
+			    //4 vecinos transitables de actual
 			    List<Nodo> sucesores = getSucesores(actual, mapa);
 			    
 			    String hijosAntes="";
@@ -133,7 +137,7 @@ public class Busqueda {
 			    paso++;
 		 }	 
 		 
-	 return null;
+	 return null; //no se ha encontrado meta
 	 }
 	
     protected int calcularH(int f, int c, Entorno mapa) {
@@ -146,7 +150,7 @@ public class Busqueda {
 	        int f = actual.f;
 	        int c = actual.c;
 	        //int g = actual.g + 1; // coste = pasos dados + 1
-
+	        //Nodo(int f, int c, Nodo padre, String accion, int g, int h)
 	        if (mapa.esTransitable(f-1, c)) sucesores.add(new Nodo(f-1, c, actual, "N", actual.g+2, calcularH(f-1, c, mapa)));
 	        if (mapa.esTransitable(f+1, c)) sucesores.add(new Nodo(f+1, c, actual, "S", actual.g+1, calcularH(f+1, c, mapa)));
 	        if (mapa.esTransitable(f, c+1)) sucesores.add(new Nodo(f, c+1, actual, "E", actual.g+1, calcularH(f, c+1, mapa)));
@@ -156,6 +160,7 @@ public class Busqueda {
 	    }
 
 	    // elimina sucesores que ya estan en Abiertos o Cerrados para evitar ciclos
+	    // repetidos: misma posicion, aunque distinto coste/padre
 	    private List<Nodo> quitarRepetidos(List<Nodo> sucesores, LinkedList<Nodo> abiertos, LinkedList<Nodo> cerrados) {
 	        List<Nodo> resultado = new LinkedList<>();
 	        for (int i = 0; i < sucesores.size(); i++) {

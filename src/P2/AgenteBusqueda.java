@@ -6,6 +6,7 @@ import java.util.List;
 public class AgenteBusqueda {
 		 private Queue<String> planDeAccion = new LinkedList<>();
 		 private boolean yaCalculado = false;
+		 
 		 public String pensar(Entorno entorno) {
 		 // Solo calculamos la ruta completa en el primer ciclo
 		 if (!yaCalculado) {
